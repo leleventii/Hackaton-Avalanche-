@@ -8,7 +8,7 @@ import { formatEther } from 'viem';
 import { useState, useEffect } from 'react';
 
 // Hardcoded contract address for now - replace after deployment
-const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Localhost default
+const CONTRACT_ADDRESS = "0x5a63cb7b1963bb4a30df6fc3a0afd892fdb2cfe2"; // Fuji Testnet
 
 export default function Home() {
   const [matches, setMatches] = useState<any[]>([]);

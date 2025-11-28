@@ -23,13 +23,13 @@ export default function ChatBox({ matchId, userAddress, gamerTag }: ChatBoxProps
 
     useEffect(() => {
         // Connect to backend
-        const newSocket = io('http://localhost:3001');
+        const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001');
         setSocket(newSocket);
 
         newSocket.emit('join_match', matchId);
 
         // Load history
-        fetch(`http://localhost:3001/api/chat/${matchId}`)
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001'}/api/chat/${matchId}`)
             .then(res => res.json())
             .then(data => setMessages(data.messages));
 
@@ -63,8 +63,8 @@ export default function ChatBox({ matchId, userAddress, gamerTag }: ChatBoxProps
                     <div key={i} className={`flex flex-col ${msg.sender === (gamerTag || userAddress.slice(0, 6)) ? 'items-end' : 'items-start'}`}>
                         <span className="text-xs text-gray-500 mb-1">{msg.sender}</span>
                         <div className={`p-2 rounded-lg max-w-[80%] text-sm ${msg.sender === (gamerTag || userAddress.slice(0, 6))
-                                ? 'bg-primary text-black'
-                                : 'bg-surface-hover text-white'
+                            ? 'bg-primary text-black'
+                            : 'bg-surface-hover text-white'
                             }`}>
                             {msg.message}
                         </div>

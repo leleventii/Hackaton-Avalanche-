@@ -18,11 +18,14 @@ export default function MatchRoom() {
     const [opponentTag, setOpponentTag] = useState('');
 
     // Contract Reads
-    const { data: matchData, refetch } = useReadContract({
+    const { data: matchData, refetch, isError } = useReadContract({
         address: CONTRACT_ADDRESS,
         abi: SKILLWAGER_ABI,
         functionName: 'matches',
         args: [BigInt(matchId)],
+        query: {
+            retry: false,
+        }
     });
 
     // Contract Writes
@@ -36,20 +39,21 @@ export default function MatchRoom() {
     // Fetch GamerTags
     useEffect(() => {
         if (address) {
-            fetch(`http://localhost:3001/api/gamertag/${address}`)
+            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001'}/api/gamertag/${address}`)
                 .then(res => res.json())
                 .then(data => setGamerTag(data.tag));
         }
         if (matchData) {
             const opponent = matchData[1] === address ? matchData[2] : matchData[1];
             if (opponent && opponent !== '0x0000000000000000000000000000000000000000') {
-                fetch(`http://localhost:3001/api/gamertag/${opponent}`)
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001'}/api/gamertag/${opponent}`)
                     .then(res => res.json())
                     .then(data => setOpponentTag(data.tag));
             }
         }
     }, [address, matchData]);
 
+    if (isError) return <div className="p-8 text-center text-red-500">Error loading match. Please try again.</div>;
     if (!matchData) return <div className="p-8 text-center">Loading Match...</div>;
 
     const [id, playerA, playerB, wager, bond, state, resA, resB, lastAction, votesA, votesB] = matchData as any;
@@ -109,9 +113,9 @@ export default function MatchRoom() {
 
                     {/* Status Banner */}
                     <div className={`p-4 rounded-xl border ${matchState === 0 ? 'bg-blue-900/20 border-blue-500' :
-                            matchState === 1 ? 'bg-yellow-900/20 border-yellow-500' :
-                                matchState === 2 ? 'bg-red-900/20 border-red-500' :
-                                    'bg-gray-800 border-gray-600'
+                        matchState === 1 ? 'bg-yellow-900/20 border-yellow-500' :
+                            matchState === 2 ? 'bg-red-900/20 border-red-500' :
+                                'bg-gray-800 border-gray-600'
                         }`}>
                         <h2 className="text-xl font-bold mb-2">
                             STATUS: {

@@ -14,6 +14,7 @@ import {
 } from '@rainbow-me/rainbowkit/wallets';
 import {
     avalancheFuji,
+    avalanche,
 } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
@@ -32,6 +33,7 @@ const config = getDefaultConfig({
     ],
     chains: [
         avalancheFuji,
+        avalanche,
     ],
     ssr: true,
 });
